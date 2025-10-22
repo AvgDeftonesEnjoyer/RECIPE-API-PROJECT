@@ -14,3 +14,9 @@ jobs:
         run: docker-compose run --rm app sh -c "python manage.py test"
       - name: Lint
         run: docker-compose run --rm app sh -c "flake8"
+
+#- name: Loging into Docker Hub
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USER }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}

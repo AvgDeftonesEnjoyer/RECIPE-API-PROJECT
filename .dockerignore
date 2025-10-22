@@ -22,3 +22,8 @@ venv/
 *.pyd
 *.pyw
 *.pyz
+
+#venv
+.venv/
+venv/
+env/
