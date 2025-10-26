@@ -13,6 +13,9 @@ ENV DEV=$DEV
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     echo "=== Contents of requirements.txt ===" && \
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
     cat /tmp/requirements.txt && \
     echo "=== End of requirements.txt ===" && \
     echo "=== File size ===" && \
@@ -32,10 +35,15 @@ RUN if [ "$DEV" = "true" ]; then echo "Installing dev dependencies..." && /py/bi
 # Clean up as root
 USER root
 RUN rm -rf /tmp
+RUN apk del .tmp-build-deps
 
 # Copy app directory after installing dependencies
 COPY ./app /app
+RUN chown -R django-user:django-user /app
 
 ENV PATH="/py/bin:$PATH"
 
 USER django-user
+
+# Set the default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

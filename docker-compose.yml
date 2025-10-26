@@ -15,8 +15,11 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=changeme
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: postgres:13-alpine
     volumes:
@@ -25,6 +28,11 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
       - POSTGRES_DB=devdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devuser -d devdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   dev-db-data:
