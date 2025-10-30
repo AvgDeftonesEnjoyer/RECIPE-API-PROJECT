@@ -20,9 +20,9 @@ RUN python -m venv /py && \
     echo "=== End of requirements.txt ===" && \
     echo "=== File size ===" && \
     ls -la /tmp/requirements.txt && \
-    /py/bin/pip install -r /tmp/requirements.txt && \
+    /py/bin/pip install --no-cache-dir -r /tmp/requirements.txt && \
     echo "DEV value: $DEV" && \
-    adduser \
+    id -u django-user >/dev/null 2>&1 || adduser \
         --disabled-password \
         --no-create-home \
         django-user && \
