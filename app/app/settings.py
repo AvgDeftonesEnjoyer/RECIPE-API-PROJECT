@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'user',
     'rest_framework.authtoken',
+    'recipe',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +86,8 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ.get('DB_HOST', 'db'),
+        # Default to localhost for local venv runs; Docker sets DB_HOST=db
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'NAME': os.environ.get('DB_NAME', 'devdb'),
         'USER': os.environ.get('DB_USER', 'devuser'),
         'PASSWORD': os.environ.get('DB_PASS', 'changeme'),
