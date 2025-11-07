@@ -52,7 +52,7 @@ class PublicUserApiTests(TestCase):
             'name': 'Test name',
         }
 
-        res = self.client.post(CREATE_USER_URL, payload)\
+        res = self.client.post(CREATE_USER_URL, payload)
         
         user = get_user_model().objects.filter(email=payload['email']).exists() 
 
@@ -66,7 +66,7 @@ class PublicUserApiTests(TestCase):
             'name': 'Test name',
         }
         
-        create_user(user_details)
+        create_user(**user_details)
         
         payload = {
             'email': user_details['email'],
@@ -75,7 +75,7 @@ class PublicUserApiTests(TestCase):
         res = self.client.post(TOKEN_URL, payload)
         
         self.assertIn('token', res.data)
-        self.assertEqual(res.status_code, status.HTTP_200_ok)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         
     def test_create_token_bad_credentials(self):
         """Test that token is not created if invalid credentials are provided."""
