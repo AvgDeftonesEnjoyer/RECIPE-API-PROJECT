@@ -4,6 +4,7 @@ Test models.
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from core import models
 
 def create_user(email='test@example.com', password='testpass123'):
     """Create and return a test user."""
@@ -62,3 +63,10 @@ class ModelTests(TestCase):
         user=create_user()
         tag = models.Tag.objects.create(user=user, name='Tag1')
         self.assertEqual(str(tag), tag.name)
+        
+    def test_create_ingredient(self):
+        """Test creating an ingredient is successful."""
+        user=create_user()
+        ingredient = models.Ingredient.objects.create(user=user, name='Ingredient1')
+        
+        self.assertEqual(str(ingredient), ingredient.name)
