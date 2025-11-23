@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
-WORKDIR /app
+WORKDIR /vol/app
 EXPOSE 8000
 
 ARG DEV=false
@@ -13,9 +13,9 @@ ENV DEV=$DEV
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     echo "=== Contents of requirements.txt ===" && \
-    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev && \
+    build-base postgresql-dev musl-dev zlib zlib-dev && \
     cat /tmp/requirements.txt && \
     echo "=== End of requirements.txt ===" && \
     echo "=== File size ===" && \
@@ -23,10 +23,14 @@ RUN python -m venv /py && \
     /py/bin/pip install --no-cache-dir -r /tmp/requirements.txt && \
     echo "DEV value: $DEV" && \
     id -u django-user >/dev/null 2>&1 || adduser \
-        --disabled-password \
-        --no-create-home \
-        django-user && \
-    chown -R django-user:django-user /py
+    --disabled-password \
+    --no-create-home \
+    django-user && \
+    mkdir -p /vol/web/media && \
+    mkdir -p /vol/web/static && \
+    chown -R django-user:django-user /py && \
+    chmod -R 755 /vol && \
+    chown -R django-user:django-user /vol
 
 # Install dev dependencies as django-user
 USER django-user
@@ -38,8 +42,8 @@ RUN rm -rf /tmp
 RUN apk del .tmp-build-deps
 
 # Copy app directory after installing dependencies
-COPY ./app /app
-RUN chown -R django-user:django-user /app
+COPY ./app /vol/app
+RUN chown -R django-user:django-user /vol
 
 ENV PATH="/py/bin:$PATH"
 

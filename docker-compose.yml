@@ -7,7 +7,8 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ./app:/app
+      - ./app:/vol/app
+      - dev-static-data:/vol/web
     command: >
       sh -c "/py/bin/python manage.py wait_for_db &&
              /py/bin/python manage.py migrate &&
@@ -40,3 +41,4 @@ services:
 
 volumes:
   dev-db-data:
+  dev-static-data:

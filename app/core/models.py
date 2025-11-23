@@ -1,3 +1,6 @@
+import uuid
+import os
+
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -5,6 +8,12 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.conf import settings
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image."""
+    exit = os.path.splitext(filename)[1]
+    filebane = f'{uuid.uuid4()}{exit}'
+    return f'uploads/recipe/{filebane}'
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -50,7 +59,8 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag')
     ingredients = models.ManyToManyField('Ingredient')
-    
+    image = models.ImageField(upload_to=recipe_image_file_path, null=True, blank=True)
+
 class Tag(models.Model):
     """Tag for filtering recipes."""
     name = models.CharField(max_length=255)
